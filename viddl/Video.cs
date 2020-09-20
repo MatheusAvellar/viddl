@@ -57,24 +57,23 @@ namespace viddl {
         JsonValue json = JsonValue.Parse(outLine.Data);
 
         Application.Current.Dispatcher.Invoke(new Action(() => {
-          string title = "";
-          if(json["extractor"] == "twitter") {
-            title = RemoveQuotes(json["title"]).Split(new string[] { " - " }, StringSplitOptions.None)[1];
-          } else {
-            title = RemoveQuotes(json["title"]);
+          string title = RemoveQuotes(JsonGetKey(json, "title"));
+
+          if(JsonHasKey(json, "extraction") && json["extractor"] == "twitter") {
+            title = title.Split(new string[] { " - " }, StringSplitOptions.None)[1];
           }
 
           Title = title;
           double duration = 0;
-          if(json["duration"] != null)
+          if(JsonHasKey(json, "duration"))
             duration = json["duration"];
           Duration = FormatDuration(duration);
 
           int fps = 0;
-          if(json.ContainsKey("fps"))
+          if(JsonHasKey(json, "fps"))
             fps = json["fps"];
 
-          if(json.ContainsKey("width") && json["width"] != null)
+          if(JsonHasKey(json, "width") && JsonHasKey(json, "height"))
             Resolution = FormatResolution(json["width"], json["height"], fps);
           else
             Resolution = "—";
@@ -85,6 +84,15 @@ namespace viddl {
           mainWindow.RefreshList();
         }), DispatcherPriority.ContextIdle);
       }
+    }
+
+    private bool JsonHasKey(JsonValue json, string key) {
+      return json.ContainsKey(key) && json[key] != null;
+    }
+
+    private string JsonGetKey(JsonValue json, string key) {
+      if(JsonHasKey(json, key)) return json[key];
+      return "—";
     }
 
     private void DownloadOutputHandler(object sendingProcess, DataReceivedEventArgs outLine) {
