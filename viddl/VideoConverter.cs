@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace viddl {
@@ -11,7 +12,9 @@ namespace viddl {
       // [Ref] stackoverflow.com/a/12436300/4824627
       // [Ref] docs.microsoft.com/en-us/dotnet/api/system.diagnostics.process.beginerrorreadline
       download_process = new Process();
-      string flags = "--ignore-errors --ignore-config --no-color --no-playlist --newline --id";
+      string videos_folder = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+      string path = Path.Combine(videos_folder, "%(id)s-%(title)s.%(ext)s");
+      string flags = $"--ignore-errors --ignore-config --no-color --no-playlist --newline --output \"{path}\" --restrict-filenames";
       ProcessStartInfo psi = new ProcessStartInfo {
         UseShellExecute = false,
         // Using youtube-dl: github.com/ytdl-org/youtube-dl

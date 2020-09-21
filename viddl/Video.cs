@@ -99,8 +99,8 @@ namespace viddl {
       string line = outLine.Data;
       if(!string.IsNullOrEmpty(line)) {
         if(line.StartsWith("[download]")) {
-          Console.Write(URL + " - ");
-          Console.WriteLine(line);
+          //Console.Write(URL + " - ");
+          //Console.WriteLine(line);
 
           Regex rx = new Regex(@"\[download\]\s*(?<pct>[0-9]+(?:\.[0-9])?)%", RegexOptions.Compiled);
           foreach(Match match in rx.Matches(line)) {
